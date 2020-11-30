@@ -1,7 +1,7 @@
 #include "clist.h"
 
 
-clist_s* clist_init(size_t capacity)
+clist_s* clist_create(size_t capacity)
 {
     clist_s* list = calloc(1, sizeof(clist_s));
     list->capacity = capacity * 2;
@@ -21,7 +21,7 @@ void clist_add(clist_s* clist, void* element)
 }
 
 
-void clist_free(clist_s** clist)
+void clist_destroy(clist_s** clist)
 {
     clist_s* list = *clist;
 

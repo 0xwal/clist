@@ -7,7 +7,7 @@ TEST_CASE("clist")
 {
     SECTION("clist initialization")
     {
-        clist_s* list = clist_init(5);
+        clist_s* list = clist_create(5);
 
         SECTION("capacity should be multiplied by 2")
         {
@@ -28,12 +28,12 @@ TEST_CASE("clist")
             REQUIRE(list->values[4] == 0);
         }
 
-        clist_free(&list);
+        clist_destroy(&list);
     }
 
     SECTION("clist capacity")
     {
-        clist_s* list = clist_init(1);
+        clist_s* list = clist_create(1);
         SECTION("capacity will be doubled when we add more than the current capacity")
         {
             REQUIRE(list->capacity == 2);
@@ -52,12 +52,12 @@ TEST_CASE("clist")
             clist_add(list, &value);
             REQUIRE(list->capacity == 18);
         }
-        clist_free(&list);
+        clist_destroy(&list);
     }
 
     SECTION("clist insertion")
     {
-        clist_s* list = clist_init(2);
+        clist_s* list = clist_create(2);
 
         SECTION("the used should be incremented by 1 when add a new element")
         {
@@ -95,7 +95,7 @@ TEST_CASE("clist")
             REQUIRE(list->size == 5);
         }
 
-        clist_free(&list);
+        clist_destroy(&list);
     }
 
     SECTION("clist destroy")
@@ -103,22 +103,22 @@ TEST_CASE("clist")
 
         SECTION("size should be zero the list pointer")
         {
-            clist_s* list = clist_init(2);
+            clist_s* list = clist_create(2);
             int value = 5;
             clist_add(list, &value);
 
-            clist_free(&list);
+            clist_destroy(&list);
             REQUIRE(list == nullptr);
         }
 
         SECTION("fields should be set to 0")
         {
-            clist_s* list = clist_init(2);
+            clist_s* list = clist_create(2);
             int valaue = 5;
             clist_add(list, &valaue);
 
             clist_s* anotherPossiblePointerToSameList = list;
-            clist_free(&list);
+            clist_destroy(&list);
             REQUIRE(anotherPossiblePointerToSameList->size == 0);
             REQUIRE(anotherPossiblePointerToSameList->capacity == 0);
             REQUIRE(anotherPossiblePointerToSameList->values == NULL);
