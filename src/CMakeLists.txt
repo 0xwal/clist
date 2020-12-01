@@ -1,11 +1,7 @@
 
 set(CMAKE_C_STANDARD 11)
 
-list(APPEND _SOURCES
-     clist.h
-     clist.c)
 
-
-add_library(${PROJECT_NAME} ${_SOURCES})
+add_library(${PROJECT_NAME} clist.c clist.h)
 
 target_include_directories(${PROJECT_NAME} PUBLIC .)
