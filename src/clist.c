@@ -20,6 +20,14 @@ void clist_add(clist_s* clist, void* element)
     clist->values[clist->size++] = element;
 }
 
+void clist_clear(clist_s* clist)
+{
+    for (int i = 0; i < clist->size; ++i)
+    {
+        clist->values[i] = NULL;
+    }
+    clist->size = 0;
+}
 
 void clist_destroy(clist_s** clist)
 {

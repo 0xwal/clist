@@ -98,6 +98,31 @@ TEST_CASE("clist")
         clist_destroy(&list);
     }
 
+    SECTION("clear")
+    {
+        clist_s* list = clist_create(2);
+        int value = 5;
+        clist_add(list, &value);
+        clist_add(list, &value);
+        clist_add(list, &value);
+
+        SECTION("size should be 0")
+        {
+            clist_clear(list);
+            REQUIRE(list->size == 0);
+        }
+
+        SECTION("all values should be nullptr")
+        {
+            clist_clear(list);
+            REQUIRE(list->values[0] == nullptr);
+            REQUIRE(list->values[1] == nullptr);
+            REQUIRE(list->values[2] == nullptr);
+        }
+
+        clist_destroy(&list);
+    }
+
     SECTION("destroy")
     {
 

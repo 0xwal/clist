@@ -21,6 +21,8 @@ clist_s* clist_create(size_t capacity);
 
 void clist_add(clist_s* clist, void* element);
 
+void clist_clear(clist_s* clist);
+
 void clist_destroy(clist_s** clist);
 
 #ifdef __cplusplus
