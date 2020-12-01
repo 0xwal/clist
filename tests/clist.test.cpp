@@ -5,7 +5,7 @@
 
 TEST_CASE("clist")
 {
-    SECTION("clist initialization")
+    SECTION("create")
     {
         clist_s* list = clist_create(5);
 
@@ -31,7 +31,7 @@ TEST_CASE("clist")
         clist_destroy(&list);
     }
 
-    SECTION("clist capacity")
+    SECTION("capacity")
     {
         clist_s* list = clist_create(1);
         SECTION("capacity will be doubled when we add more than the current capacity")
@@ -55,7 +55,7 @@ TEST_CASE("clist")
         clist_destroy(&list);
     }
 
-    SECTION("clist insertion")
+    SECTION("add")
     {
         clist_s* list = clist_create(2);
 
@@ -98,7 +98,7 @@ TEST_CASE("clist")
         clist_destroy(&list);
     }
 
-    SECTION("clist destroy")
+    SECTION("destroy")
     {
 
         SECTION("size should be zero the list pointer")
