@@ -27,11 +27,11 @@ clist_s* clist_create(size_t capacity);
 
 void clist_allocator_register(allocator_t allocator);
 
-allocator_t clist_allocator();
+allocator_t clist_allocator_current();
 
-void clist_reset_allocator();
+void clist_allocator_restore();
 
-void* clist_default_allocator(size_t size);
+void* clist_allocator_default(size_t size);
 
 
 void clist_add(clist_s* clist, void* element);

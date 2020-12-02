@@ -19,7 +19,7 @@ TEST_CASE("clist")
             });
             clist_s* clist = clist_create(20);
             REQUIRE(clist == nullptr);
-            clist_reset_allocator();
+            clist_allocator_restore();
         }
 
         SECTION("should call allocator twice with valid arguments")
@@ -57,7 +57,7 @@ TEST_CASE("clist")
         }
 
         clist_destroy(&list);
-        clist_reset_allocator();
+        clist_allocator_restore();
     }
 
     SECTION("register allocator")
@@ -69,7 +69,7 @@ TEST_CASE("clist")
             };
 
             clist_allocator_register(allocator);
-            auto alloc = clist_allocator();
+            auto alloc = clist_allocator_current();
             REQUIRE(alloc == allocator);
             REQUIRE(alloc(16) == reinterpret_cast<void*>(0x66));
         }
@@ -77,17 +77,17 @@ TEST_CASE("clist")
         SECTION("reset allocator to default")
         {
             clist_allocator_register(reinterpret_cast<allocator_t>(0x20));
-            REQUIRE(clist_allocator() == reinterpret_cast<allocator_t>(0x20));
-            clist_reset_allocator();
-            REQUIRE(clist_allocator() == &clist_default_allocator);
+            REQUIRE(clist_allocator_current() == reinterpret_cast<allocator_t>(0x20));
+            clist_allocator_restore();
+            REQUIRE(clist_allocator_current() == &clist_allocator_default);
         }
 
         SECTION("allocator should point to default allocator")
         {
-            auto alloc = clist_allocator();
-            REQUIRE(alloc == &clist_default_allocator);
+            auto alloc = clist_allocator_current();
+            REQUIRE(alloc == &clist_allocator_default);
         }
-        clist_reset_allocator();
+        clist_allocator_restore();
     }
 
     SECTION("capacity")

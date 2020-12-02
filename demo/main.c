@@ -1,7 +1,7 @@
 
 
 #include <clist.h>
-#include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 
 bool worldPredicate(void* value)
@@ -9,8 +9,15 @@ bool worldPredicate(void* value)
     return !strcmp(value, "World");
 }
 
+void* custom_allocator(size_t size)
+{
+    return malloc(size);
+}
+
 int main()
 {
+    clist_allocator_register(custom_allocator);
+
     clist_s* list = clist_create(16);
 
     clist_add(list, "Hello");

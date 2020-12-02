@@ -4,22 +4,22 @@ allocator_t g_allocator = NULL;
 
 clist_s* clist_create(size_t capacity)
 {
-    clist_s* list = clist_allocator()(sizeof(clist_s));
+    clist_s* list = clist_allocator_current()(sizeof(clist_s));
     if (list == NULL)
     {
         return NULL;
     }
     list->capacity = capacity * 2;
-    list->values = clist_allocator()(list->capacity * sizeof(void*));
+    list->values = clist_allocator_current()(list->capacity * sizeof(void*));
     return list;
 }
 
-void clist_reset_allocator()
+void clist_allocator_restore()
 {
-    g_allocator = &clist_default_allocator;
+    g_allocator = &clist_allocator_default;
 }
 
-void* clist_default_allocator(size_t size)
+void* clist_allocator_default(size_t size)
 {
     char* memory = malloc(size);
     for (int i = 0; i < size; ++i)
@@ -34,11 +34,11 @@ void clist_allocator_register(allocator_t allocator)
     g_allocator = allocator;
 }
 
-allocator_t clist_allocator()
+allocator_t clist_allocator_current()
 {
     if (!g_allocator)
     {
-        return &clist_default_allocator;
+        return &clist_allocator_default;
     }
     return g_allocator;
 }
