@@ -98,6 +98,36 @@ TEST_CASE("clist")
         clist_destroy(&list);
     }
 
+    SECTION("find")
+    {
+        clist_s* list = clist_create(2);
+        int values[] = { 2, 4, 6 };
+
+        clist_add(list, &values[0]);
+        clist_add(list, &values[1]);
+        clist_add(list, &values[2]);
+
+        SECTION("return index of existent value")
+        {
+            int index = clist_find(list, [](void* value) -> bool {
+                return *reinterpret_cast<int*>(value) == 4;
+            });
+
+            REQUIRE(index == 1);
+        }
+
+        SECTION("return -1 for value that not exist")
+        {
+            int index = clist_find(list, [](void* value) -> bool {
+                return *reinterpret_cast<int*>(value) == 100;
+            });
+
+            REQUIRE(index == -1);
+        }
+
+        clist_destroy(&list);
+    }
+
     SECTION("clear")
     {
         clist_s* list = clist_create(2);

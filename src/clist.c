@@ -20,6 +20,18 @@ void clist_add(clist_s* clist, void* element)
     clist->values[clist->size++] = element;
 }
 
+int clist_find(clist_s* clist, predicate_t predicate)
+{
+    for (int i = 0; i < clist->size; ++i)
+    {
+        if (predicate(clist->values[i]))
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
 void clist_clear(clist_s* clist)
 {
     for (int i = 0; i < clist->size; ++i)
