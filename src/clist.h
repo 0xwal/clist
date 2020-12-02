@@ -8,6 +8,8 @@
 
 typedef bool(* predicate_t)(void* value);
 
+typedef void* (* allocator_t)(size_t size);
+
 typedef struct clist clist_s;
 struct clist
 {
@@ -22,6 +24,16 @@ extern "C" {
 
 clist_s* clist_create(size_t capacity);
 
+
+void clist_allocator_register(allocator_t allocator);
+
+allocator_t clist_allocator();
+
+void clist_reset_allocator();
+
+void* clist_default_allocator(size_t size);
+
+
 void clist_add(clist_s* clist, void* element);
 
 int clist_find(clist_s* clist, predicate_t predicate);
@@ -29,6 +41,8 @@ int clist_find(clist_s* clist, predicate_t predicate);
 void clist_clear(clist_s* clist);
 
 void clist_destroy(clist_s** clist);
+
+
 
 #ifdef __cplusplus
 }

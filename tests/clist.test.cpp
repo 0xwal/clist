@@ -3,11 +3,39 @@
 #include <catch2/catch.hpp>
 #include <clist.h>
 
+size_t callCount = 0;
+int arguments[8][8];
+
 TEST_CASE("clist")
 {
     SECTION("create")
     {
         clist_s* list = clist_create(5);
+
+        SECTION("return NULL when allocator returns < 1")
+        {
+            clist_allocator_register([](size_t size) -> void* {
+                return nullptr;
+            });
+            clist_s* clist = clist_create(20);
+            REQUIRE(clist == nullptr);
+            clist_reset_allocator();
+        }
+
+        SECTION("should call allocator twice with valid arguments")
+        {
+            callCount = 0;
+            clist_allocator_register([](size_t size) -> void* {
+                arguments[callCount++][0] = size;
+                return malloc(size);
+            });
+
+            clist_s* clist = clist_create(1);
+            REQUIRE(callCount == 2);
+            REQUIRE(arguments[0][0] == sizeof(clist_s));
+            REQUIRE(arguments[1][0] == (sizeof(void*) * 2));
+            clist_destroy(&clist);
+        }
 
         SECTION("capacity should be multiplied by 2")
         {
@@ -29,6 +57,37 @@ TEST_CASE("clist")
         }
 
         clist_destroy(&list);
+        clist_reset_allocator();
+    }
+
+    SECTION("register allocator")
+    {
+        SECTION("providing a custom allocator")
+        {
+            allocator_t allocator = [](size_t size) -> void* {
+                return reinterpret_cast<void*>(0x66);
+            };
+
+            clist_allocator_register(allocator);
+            auto alloc = clist_allocator();
+            REQUIRE(alloc == allocator);
+            REQUIRE(alloc(16) == reinterpret_cast<void*>(0x66));
+        }
+
+        SECTION("reset allocator to default")
+        {
+            clist_allocator_register(reinterpret_cast<allocator_t>(0x20));
+            REQUIRE(clist_allocator() == reinterpret_cast<allocator_t>(0x20));
+            clist_reset_allocator();
+            REQUIRE(clist_allocator() == &clist_default_allocator);
+        }
+
+        SECTION("allocator should point to default allocator")
+        {
+            auto alloc = clist_allocator();
+            REQUIRE(alloc == &clist_default_allocator);
+        }
+        clist_reset_allocator();
     }
 
     SECTION("capacity")

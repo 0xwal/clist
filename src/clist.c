@@ -1,12 +1,46 @@
 #include "clist.h"
 
+allocator_t g_allocator = NULL;
 
 clist_s* clist_create(size_t capacity)
 {
-    clist_s* list = calloc(1, sizeof(clist_s));
+    clist_s* list = clist_allocator()(sizeof(clist_s));
+    if (list == NULL)
+    {
+        return NULL;
+    }
     list->capacity = capacity * 2;
-    list->values = calloc(list->capacity, sizeof(NULL));
+    list->values = clist_allocator()(list->capacity * sizeof(void*));
     return list;
+}
+
+void clist_reset_allocator()
+{
+    g_allocator = &clist_default_allocator;
+}
+
+void* clist_default_allocator(size_t size)
+{
+    char* memory = malloc(size);
+    for (int i = 0; i < size; ++i)
+    {
+        memory[i] = 0;
+    }
+    return memory;
+}
+
+void clist_allocator_register(allocator_t allocator)
+{
+    g_allocator = allocator;
+}
+
+allocator_t clist_allocator()
+{
+    if (!g_allocator)
+    {
+        return &clist_default_allocator;
+    }
+    return g_allocator;
 }
 
 void clist_add(clist_s* clist, void* element)
