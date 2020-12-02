@@ -2,7 +2,12 @@
 
 #include <clist.h>
 #include <printf.h>
+#include <string.h>
 
+bool worldPredicate(void* value)
+{
+    return !strcmp(value, "World");
+}
 
 int main()
 {
@@ -11,6 +16,10 @@ int main()
     clist_add(list, "Hello");
     clist_add(list, "World");
     clist_add(list, "clist");
+
+    int worldIndex = clist_find(list, worldPredicate);
+
+    printf("World index: %d\n", worldIndex);
 
     printf("%lu\n", list->size);
 
