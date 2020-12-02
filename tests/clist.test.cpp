@@ -5,6 +5,7 @@
 
 size_t callCount = 0;
 int arguments[8][8];
+char* space[128];
 
 TEST_CASE("clist")
 {
@@ -12,9 +13,25 @@ TEST_CASE("clist")
     {
         clist_s* list = clist_create(5);
 
-        SECTION("return NULL when allocator returns < 1")
+        SECTION("return NULL when first allocator returns < 1")
         {
             clist_allocator_register([](size_t size) -> void* {
+                return nullptr;
+            });
+            clist_s* clist = clist_create(20);
+            REQUIRE(clist == nullptr);
+            clist_allocator_restore();
+        }
+
+        SECTION("return NULL when second allocator returns < 1 and free first one")
+        {
+            //TODO: first should be freed
+            callCount = 0;
+            clist_allocator_register([](size_t size) -> void* {
+                if (callCount++ == 0)
+                {
+                    return reinterpret_cast<void*>(space);
+                }
                 return nullptr;
             });
             clist_s* clist = clist_create(20);

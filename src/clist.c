@@ -16,9 +16,19 @@ clist_s* clist_create(size_t capacity)
 
     memset(list, 0, sizeof(clist_s));
 
-    list->capacity = capacity * 2;
-    size_t finalSize = list->capacity * sizeof(void*);
-    list->values = allocator(finalSize);
+    size_t requestedCapacity = capacity * 2;
+    size_t finalSize = requestedCapacity * sizeof(void*);
+
+    void* values = allocator(finalSize);
+
+    if (!values)
+    {
+        //TODO: deallocate list
+        return NULL;
+    }
+
+    list->values = values;
+    list->capacity = requestedCapacity;
 
     memset(list->values, 0, finalSize);
 
