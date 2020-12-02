@@ -169,8 +169,8 @@ TEST_CASE("clist")
         SECTION("fields should be set to 0")
         {
             clist_s* list = clist_create(2);
-            int valaue = 5;
-            clist_add(list, &valaue);
+            int value = 5;
+            clist_add(list, &value);
 
             clist_s* anotherPossiblePointerToSameList = list;
             clist_destroy(&list);
