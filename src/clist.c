@@ -1,16 +1,27 @@
+#include <memory.h>
 #include "clist.h"
 
 allocator_t g_allocator = NULL;
 
 clist_s* clist_create(size_t capacity)
 {
-    clist_s* list = clist_allocator_current()(sizeof(clist_s));
+    allocator_t allocator = clist_allocator_current();
+
+    clist_s* list = allocator(sizeof(clist_s));
+
     if (list == NULL)
     {
         return NULL;
     }
+
+    memset(list, 0, sizeof(clist_s));
+
     list->capacity = capacity * 2;
-    list->values = clist_allocator_current()(list->capacity * sizeof(void*));
+    size_t finalSize = list->capacity * sizeof(void*);
+    list->values = allocator(finalSize);
+
+    memset(list->values, 0, finalSize);
+
     return list;
 }
 
@@ -21,12 +32,7 @@ void clist_allocator_restore()
 
 void* clist_allocator_default(size_t size)
 {
-    char* memory = malloc(size);
-    for (int i = 0; i < size; ++i)
-    {
-        memory[i] = 0;
-    }
-    return memory;
+    return malloc(size);
 }
 
 void clist_allocator_register(allocator_t allocator)

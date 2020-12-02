@@ -24,7 +24,7 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     if (LEAKS_EXE)
         message(STATUS "found the required application " ${LEAKS_EXE})
         add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-                           COMMAND leaks -atExit -- ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME} | grep leaks > memory-leaks.out
+                           #                           COMMAND leaks -atExit -- ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME} | grep leaks > memory-leaks.out
                            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
                            COMMENT "Running memory check"
                            )
