@@ -69,6 +69,7 @@ void clist_add(clist_s* clist, void* element)
         {
             newSpace[i] = clist->values[i];
         }
+        free(clist->values);
         clist->values = newSpace;
         clist->capacity = newCapacity;
     }
