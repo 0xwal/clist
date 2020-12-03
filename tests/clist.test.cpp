@@ -25,7 +25,6 @@ TEST_CASE("clist")
 
         SECTION("return NULL when second allocator returns < 1 and free first one")
         {
-            //TODO: first should be freed
             callCount = 0;
             clist_allocator_register([](size_t size) -> void* {
                 if (callCount++ == 0)
@@ -110,6 +109,7 @@ TEST_CASE("clist")
     SECTION("capacity")
     {
         clist_s* list = clist_create(1);
+
         SECTION("capacity will be doubled when we add more than the current capacity")
         {
             REQUIRE(list->capacity == 2);
@@ -128,6 +128,26 @@ TEST_CASE("clist")
             clist_add(list, &value);
             REQUIRE(list->capacity == 18);
         }
+
+        SECTION("should call the allocator when resizing the memory")
+        {
+            callCount = 0;
+            clist_allocator_register([](size_t size) -> void* {
+                arguments[callCount++][0] = size;
+                return malloc(size);
+            });
+            int value = 2;
+            void** initValues = list->values;
+            clist_add(list, &value);
+            clist_add(list, &value);
+            clist_add(list, &value);
+            clist_allocator_restore();
+            REQUIRE(callCount == 1);
+            int initCapacitySize = 2;
+            REQUIRE(arguments[0][0] == ((BLOCK_SIZE + initCapacitySize) * sizeof(void*)));
+            REQUIRE(list->values != initValues);
+        }
+
         clist_destroy(&list);
     }
 

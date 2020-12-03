@@ -1,7 +1,7 @@
 #include <memory.h>
 #include "clist.h"
 
-allocator_t g_allocator = NULL;
+static allocator_t g_allocator = NULL;
 
 clist_s* clist_create(size_t capacity)
 {
@@ -23,7 +23,6 @@ clist_s* clist_create(size_t capacity)
 
     if (!values)
     {
-        //TODO: deallocate list
         return NULL;
     }
 
@@ -64,7 +63,13 @@ void clist_add(clist_s* clist, void* element)
     if (clist->size >= clist->capacity)
     {
         size_t newSize = clist->capacity + BLOCK_SIZE;
-        clist->values = realloc(clist->values, sizeof(NULL) * newSize);
+//        clist->values = realloc(clist->values, sizeof(NULL) * newSize);
+        void** newSpace = clist_allocator_current()(sizeof(NULL) * newSize);
+        for (int i = 0; i < clist->size; ++i)
+        {
+            newSpace[i] = clist->values[i];
+        }
+        clist->values = newSpace;
         clist->capacity = newSize;
     }
     clist->values[clist->size++] = element;
