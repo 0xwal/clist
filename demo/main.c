@@ -9,14 +9,10 @@ bool worldPredicate(void* value)
     return !strcmp(value, "World");
 }
 
-char g_memory_space[512];
-size_t reserved = 0;
 
 void* custom_allocator(size_t size)
 {
-    char* mem = g_memory_space + reserved;
-    reserved += size;
-    return mem;
+    return malloc(size);
 }
 
 int main()
@@ -40,7 +36,7 @@ int main()
         printf("%s ", (char*)list->values[i]);
     }
 
-//    clist_destroy(&list);
+    clist_destroy(&list);
 
     return 0;
 }
