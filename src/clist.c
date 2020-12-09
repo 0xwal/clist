@@ -106,9 +106,6 @@ void clist_destroy(clist_s** clist)
         return;
     }
 
-    list->size = 0;
-    list->capacity = 0;
-
     if (list->values != NULL)
     {
         free(list->values);

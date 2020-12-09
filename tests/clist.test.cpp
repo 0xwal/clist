@@ -261,18 +261,5 @@ TEST_CASE("clist")
             clist_destroy(&list);
             REQUIRE(list == nullptr);
         }
-
-        SECTION("fields should be set to 0")
-        {
-            clist_s* list = clist_create(2);
-            int value = 5;
-            clist_add(list, &value);
-
-            clist_s* anotherPossiblePointerToSameList = list;
-            clist_destroy(&list);
-            REQUIRE(anotherPossiblePointerToSameList->size == 0);
-            REQUIRE(anotherPossiblePointerToSameList->capacity == 0);
-            REQUIRE(anotherPossiblePointerToSameList->values == NULL);
-        }
     }
 }
